@@ -6,13 +6,28 @@ import Toolbar from './Components/ToolbarBootstrap/Toolbar'
 import './App.css'
 import microphone from './microphone.png'
 
+var recorder
+var audio_context
 
-window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-const recognition = new window.SpeechRecognition() // why I have to put window here? react? 
+window.onload = function init(){
+  try {
+      window.AudioContext = window.AudioContext || window.webkitAudioContext
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia
+      window.URL = window.URL || window.webkitURL
 
-recognition.continous = true
-recognition.interimResults = true // as I am spaeking is populating if we set this to false we have to stop speaking before seeing the results
-recognition.lang = "es"
+      audio_context = new AudioContext()
+  } catch (err) {
+      console.error(err.name,err.message,err)
+      alert('No hay soporte de audio web en este navegador!!')
+  }
+
+  navigator.mediaDevices.getUserMedia({audio: true})
+  .then( stream => {
+      let input = audio_context.createMediaStreamSource(stream)
+      recorder = new window.Recorder(input)
+  })
+  .catch( err => console.log(err))
+}
 
 class App extends Component {
   constructor(props){
@@ -74,48 +89,68 @@ class App extends Component {
     this.setState({videos: urls})
   }
   
-  handleListen = () => {
-    if (this.state.listening){
-      this.setState({loading: true})
-      recognition.start()
-      // recognition.onend = () => {
-      //   console.log("...continue listening...")
-      //   recognition.start()
-      // }
+  handleListen = async () => {
+    if(this.state.listening){
+      recorder && recorder.record()
     } else {
-      this.setState({
-        loading:false,
-      })
-      recognition.stop()
-      recognition.onend = () => {
-        console.log("Stopped listening per click")
-        this.setState({loading:false})
-      }
-    }
-    recognition.onend = () => {
-      console.log("Stopped listening per click")
-      this.setState({
-        listening: !this.state.listening,
-        loading:false,
-      })
-    }
-
-    recognition.onstart = () => {
-      console.log("Listening!")
-      this.setState({loading: true})
-    }
-
-    let finalTranscript = ''
-    recognition.onresult = event => {
-      let interimTranscript = ''
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) finalTranscript += transcript + ' ';
-        else interimTranscript += transcript;
-      }
-      this.setState({finalText: finalTranscript})
+      recorder && recorder.stop()
+      this.createDownloadLink()
+      recorder && recorder.clear();
     }
   }
+
+  createDownloadLink = () => {
+      // var variable = "hola"
+      // recorder && await recorder.exportWAV(async function (blob){
+      //     let result = await new Promise((resolve, reject) => {
+      //       const reader = new FileReader();
+      //       reader.readAsDataURL(blob);
+      //       reader.onload = () => resolve(reader.result);
+      //       reader.onerror = error => reject(error);
+      //     })
+      //     let b64 = result.split(",")[1]
+      //     let body = { data: b64 }
+      //     let response = await fetch('http://localhost:8000/',{
+      //         method: 'POST',
+      //         headers: {
+      //             'Content-Type': 'application/json',
+      //         },
+      //         body: JSON.stringify(body)
+      //     })
+      //     // console.log("response",response)
+      //     let data = await response.json()
+      //     console.log(data.result)
+      //     console.log("Mi variable",variable)
+      //     variable = data.result
+      //     console.log("Mi variable",variable)
+      //   })
+      //   console.log("Mi variable fuera del contexto: ",variable)
+
+      recorder.exportWAV(blob => {
+          let result = new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+          })
+          result.then(result => {
+            let b64 = result.split(",")[1]
+            let body = { data: b64 }
+            return fetch('http://localhost:8000/',{
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }, 
+              body: JSON.stringify(body)
+            })
+
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data.result)
+            this.setState({ finalText: data.result})
+          })
+        })
+
+      }
 
   toggleListen = () => {
     this.setState({
