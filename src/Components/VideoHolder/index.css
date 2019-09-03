@@ -1,0 +1,16 @@
+.video-holder {
+    width: 100%;
+    padding: 5%;
+}
+.video-holder:hover {
+    cursor: pointer;
+}
+
+.video-holder:hover > .video-holder__video {
+    border: 1px solid white;
+}
+
+.video-holder__text {
+    font-size: 18px;
+}
+

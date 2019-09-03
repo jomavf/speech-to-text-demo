@@ -1,13 +1,23 @@
-body {
+*,*::before,*::after {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+@font-face {
+  font-family: PopLight;
+  src: url("./Fonts/Poppins-Light.ttf")
+}
+@font-face {
+  font-family: PopRegular;
+  src: url("./Fonts/Poppins-Regular.ttf")
+}
+@font-face {
+  font-family: PopBold;
+  src: url("./Fonts/Poppins-Bold.ttf")
+}
+
+body {
+  font-family: PopLight;
+  color:white;
 }
