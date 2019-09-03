@@ -1,10 +1,9 @@
-const SET_FILTER_TEXT = 'SET_FILTER_TEXT'
+import searchBarActions from './search-bar'
+import principalPageActions from './principal-page'
 
-export const actions = {
-    setFilterTextAction(filterText) {
-        return {
-            type: SET_FILTER_TEXT,
-            payload: filterText
-        }
-    }
+const actions = {
+    ...searchBarActions,
+    ...principalPageActions,
 }
+
+export default actions

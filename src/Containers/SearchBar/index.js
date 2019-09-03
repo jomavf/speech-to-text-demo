@@ -3,7 +3,7 @@ import microphone from './microphone.png'
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { actions } from '../../redux/actions'
+import actions from '../../redux/actions'
 
 class SearchBar extends Component {
     constructor(){
@@ -57,6 +57,7 @@ class SearchBar extends Component {
     }
 
     createDownloadLink = () => {
+        this.props.setLoadingFilterTextAction(true)
         let { recorder } = this.state
         recorder.exportWAV(blob => {
             let result = new Promise((resolve, reject) => {
@@ -78,18 +79,20 @@ class SearchBar extends Component {
             .then(data => {
                 console.log(data.result)
                 this.props.setFilterTextAction(data.result)
-                // this.setState({ finalText: data.result})
+                this.props.setLoadingFilterTextAction(false)
             })
         })
     }
 
     render(){
+        let { listening } = this.state
+        let searchBoxBtnListening = listening ? 'search-box__btn-listening' : 'search-box__btn'
         return (
             <div className="search-box">
-                <input className="search-box__txt" type="text" placeholder="Empieza a buscar" value={this.props.searchBar.filterText}/>
-                <button className="search-box__btn" onClick={this.toggleListen}>
-                    <img src={microphone} height="60%" width="60%" alt="microphone-img"/>
+                <button className={searchBoxBtnListening} onClick={this.toggleListen}>
+                    <img src={microphone} height="50%" width="50%" alt="microphone-img"/>
                 </button>
+                <input className="search-box__txt" type="text" placeholder="Empieza a buscar" value={this.props.searchBar.filterText}/>
             </div>
         )
     }
@@ -105,7 +108,10 @@ function mapDispatchToProps(dispatch) {
     return {
         setFilterTextAction(filterText){
             dispatch(actions.setFilterTextAction(filterText))
-        }
+        },
+        setLoadingFilterTextAction(payload){
+            dispatch(actions.setLoadingFilterTextAction(payload))
+        },
     }
 }
 

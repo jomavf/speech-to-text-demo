@@ -1,5 +1,5 @@
 .page {
-    min-height: 90vh;
+    min-height: 80vh;
     display: grid;
     grid-template-columns: 5% 1.5fr 3fr 5%;
 }
@@ -7,7 +7,7 @@
 .principal__list {
     grid-column: 2/3;
     overflow: scroll;
-    height: 90vh;
+    height: 80vh;
 }
 
 .principal__video {

@@ -10,6 +10,11 @@ const searchBarReducer = (state = initialState, action) => {
                 ...state,
                 filterText: action.payload
             }
+        case "SET_LOADING_FILTER_TEXT":
+            return {
+                ...state,
+                loading: action.payload
+            }
         default:
             return state
     }

@@ -3,6 +3,7 @@ import './App.css'
 
 import Navigation from './Containers/Navigation'
 import Main from './Containers/Main'
+import SearchBar from './Containers/SearchBar'
 
 var recorder
 var audio_context
@@ -92,6 +93,7 @@ class App extends Component {
     return (
       <div className="principal">
         <Navigation/>
+        <SearchBar/>
         <main>
           <Main/>
         </main>

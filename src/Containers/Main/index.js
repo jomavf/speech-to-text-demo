@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import './index.css'
-
+import { connect } from 'react-redux'
 import VideoHolder from '../../Components/VideoHolder'
+import actions from '../../redux/actions'
 
 console.log("Archivo Main")
 
-export default class Main extends Component {
+class Main extends Component {
     constructor(props){
         console.log("Constructor Main")
         super(props)
@@ -51,6 +52,12 @@ export default class Main extends Component {
             filterText: "",
         }
     }
+
+    onClickList = (video) => {
+        this.props.setPrincipalVideoAction(video.url)
+        this.props.setPrincipalTitleAction(video.title)
+    }
+
     render(){
         return (
             <div className="page">
@@ -59,26 +66,48 @@ export default class Main extends Component {
                         this.state.listVideos
                         .filter(video => {
                             let title = video.title.toLocaleLowerCase()
-                            let filterText = this.state.filterText.toLocaleLowerCase().trim()
+                            let filterText = this.props.filterText.toLocaleLowerCase().trim()
                             let flag = title.includes(filterText)
                             return flag
                         })
                         .map((video, index) => {
                             return (
-                                <VideoHolder key={index} url={video.url} title={video.title} />
-                                // <div key={index} onClick={() => this.handleClick(video)}>
-                                //     <video src={video.url}/>
-                                //     <p>{ video.title }</p>
-                                // </div>
+                                <VideoHolder key={index} url={video.url} title={video.title} onClickHandler={() => this.onClickList(video)}/>
                             )
                         })
                     }
                 </section>
                 <section className="principal__video">
-                    <video width="100%" controls autoPlay/>
-                    <h1>Titulo del video</h1>
+                    <video src={this.props.principalVideo} width="100%" controls autoPlay/>
+                    <h1>{this.props.principalTitle}</h1>
                 </section>
             </div>
         )
     }
 }
+
+function mapStateToProps(state) {
+    let { principalVideo, principalTitle } = state.principalPage
+    let { filterText } = state.searchBar
+    return {
+        principalVideo,
+        principalTitle,
+        filterText
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setPrincipalVideoAction(principalVideoUrl){
+            dispatch(actions.setPrincipalVideoAction(principalVideoUrl))
+        },
+        setPrincipalTitleAction(principalTitle){
+            dispatch(actions.setPrincipalTitleAction(principalTitle))
+        },
+        setResultListAction(resultList){
+            dispatch(actions.setResultListAction(resultList))
+        },
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Main)
