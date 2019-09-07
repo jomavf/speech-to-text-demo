@@ -13,7 +13,7 @@ const actions = {
             type: SET_LOADING_FILTER_TEXT,
             payload
         }
-    }
+    },
 }
 
 export default actions;

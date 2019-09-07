@@ -46,6 +46,7 @@ class SearchBar extends Component {
     }
 
     handleListen = async () => {
+        
         let { recorder } = this.state
         if(this.state.listening){
             recorder && recorder.record()
@@ -84,6 +85,10 @@ class SearchBar extends Component {
         })
     }
 
+    onChangeHandler = (event) => {
+        this.props.setFilterTextAction(event.target.value)
+    }
+
     render(){
         let { listening } = this.state
         let searchBoxBtnListening = listening ? 'search-box__btn-listening' : 'search-box__btn'
@@ -92,7 +97,7 @@ class SearchBar extends Component {
                 <button className={searchBoxBtnListening} onClick={this.toggleListen}>
                     <img src={microphone} height="50%" width="50%" alt="microphone-img"/>
                 </button>
-                <input className="search-box__txt" type="text" placeholder="Empieza a buscar" value={this.props.searchBar.filterText}/>
+                <input className="search-box__txt" type="text" placeholder="Reproducir video de ..." value={this.props.searchBar.filterText} onChange={this.onChangeHandler}/>
             </div>
         )
     }
@@ -111,6 +116,9 @@ function mapDispatchToProps(dispatch) {
         },
         setLoadingFilterTextAction(payload){
             dispatch(actions.setLoadingFilterTextAction(payload))
+        },
+        updateVideoListAction(payload){
+            dispatch(actions.updateVideoListAction(payload))
         },
     }
 }

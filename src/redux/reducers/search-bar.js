@@ -1,6 +1,7 @@
 let initialState = {
     loading: false,
     filterText: "",
+    updateVideoList: false,
 }
 
 const searchBarReducer = (state = initialState, action) => {

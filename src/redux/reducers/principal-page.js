@@ -2,6 +2,7 @@ let initialState = {
     principalVideo: "",
     principalTitle: "",
     resultList: [],
+    loadingFirebase: false
 }
 
 const principalPageReducer = (state = initialState, action) => {
@@ -20,6 +21,11 @@ const principalPageReducer = (state = initialState, action) => {
             return {
                 ...state,
                 resultList: action.payload
+            }
+        case "SET_LOADING_FIREBASE":
+            return {
+                ...state,
+                loadingFirebase: action.payload
             }
         default:
             return state

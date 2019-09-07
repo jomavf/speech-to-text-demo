@@ -5,90 +5,16 @@ import Navigation from './Containers/Navigation'
 import Main from './Containers/Main'
 import SearchBar from './Containers/SearchBar'
 
-var recorder
-var audio_context
-
-
-window.onload = function init(){
-  try {
-      window.AudioContext = window.AudioContext || window.webkitAudioContext
-      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia
-      window.URL = window.URL || window.webkitURL
-
-      audio_context = new AudioContext()
-  } catch (err) {
-      console.error(err.name,err.message,err)
-      alert('No hay soporte de audio web en este navegador!!')
-  }
-
-  navigator.mediaDevices.getUserMedia({audio: true})
-  .then( stream => {
-      let input = audio_context.createMediaStreamSource(stream)
-      recorder = new window.Recorder(input)
-  })
-  .catch( err => console.log(err))
-}
+console.log("Archivo App")
 
 class App extends Component {
   constructor(props){
     console.log("Constructor App")
     super(props)
     this.state = {
-      loading: false,
-      listening: false,
-      finalText: "",
-      currentVideo: {},
-    }
-  }
-  
-  handleListen = async () => {
-    if(this.state.listening){
-      recorder && recorder.record()
-    } else {
-      recorder && recorder.stop()
-      this.createDownloadLink()
-      recorder && recorder.clear();
     }
   }
 
-  createDownloadLink = () => {
-
-      recorder.exportWAV(blob => {
-          let result = new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(blob);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-          })
-          result.then(result => {
-            let b64 = result.split(",")[1]
-            let body = { data: b64 }
-            return fetch('http://localhost:8000/',{
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' }, 
-              body: JSON.stringify(body)
-            })
-
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data.result)
-            this.setState({ finalText: data.result})
-          })
-        })
-      }
-
-  toggleListen = () => {
-    this.setState({
-      listening: !this.state.listening
-    }, this.handleListen)
-  }
-  handleOnChange = (event) => {
-    this.setState({finalText: event.target.value})
-  }
-  handleClick = (video) => {
-    this.setState({currentVideo: video})
-  }
   render(){
     return (
       <div className="principal">
