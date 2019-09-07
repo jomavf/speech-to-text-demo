@@ -15,28 +15,41 @@ class SearchBar extends Component {
         }
     }
 
-    init(){
+    async init(){
         try {
             window.AudioContext = window.AudioContext || window.webkitAudioContext
             navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia
             window.URL = window.URL || window.webkitURL
             let audio_context = new AudioContext()
+
+            
+            // if(audio_context.state === 'suspended') {
+            //     console.log('Entro a suspended')
+            //     await audio_context.resume()
+            //     console.log('Ahora esta',audio_context.state)
+            //     this.setState({ audio_context })
+            // } else {
+                // }
             this.setState({ audio_context })
-        } catch (err) {
+            } catch (err) {
             console.error(err.name,err.message,err)
             alert('No hay soporte de audio web en este navegador!!')
         }
-        navigator.mediaDevices.getUserMedia({audio: true})
-        .then( stream => {
-            let input = this.state.audio_context.createMediaStreamSource(stream)
-            let recorder = new window.Recorder(input)
-            this.setState({ recorder })
-        })
-        .catch( err => console.log(err))
+        let stream = await navigator.mediaDevices.getUserMedia({audio: true})
+        console.log('ESTADO audio-context',this.state.audio_context.state)
+        let input = this.state.audio_context.createMediaStreamSource(stream)
+        let recorder = new window.Recorder(input)
+        this.setState({ recorder })
     }
 
-    componentDidMount = () => {
-        this.init() 
+    componentDidUpdate = async () => {
+        if(this.state.audio_context.state === 'suspended'){
+            await this.state.audio_context.resume()
+        }
+    }
+
+    componentDidMount = async () => {
+        await this.init() 
     }
 
     toggleListen = () => {
@@ -46,42 +59,69 @@ class SearchBar extends Component {
     }
 
     handleListen = async () => {
-        
+        if(this.state.audio_context.state === 'suspended') {
+            await this.state.audio_context.resume()
+            console.log('Ahora esta',this.state.audio_context.state)
+            // this.setState({ audio_context })
+        }
         let { recorder } = this.state
         if(this.state.listening){
-            recorder && recorder.record()
+            console.log('Entre al if')
+            recorder.record()
         } else {
-            recorder && recorder.stop()
+            console.log('Al else')
+            recorder.stop()
             this.createDownloadLink()
-            recorder && recorder.clear();
+            recorder.clear();
         }
     }
 
-    createDownloadLink = () => {
+    createDownloadLink = async() => {
         this.props.setLoadingFilterTextAction(true)
         let { recorder } = this.state
-        recorder.exportWAV(blob => {
+        await recorder.exportWAV(async blob => {
+            console.log('blob',blob)
             let result = new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(blob);
                 reader.onload = () => resolve(reader.result);
                 reader.onerror = error => reject(error);
             })
-            result.then(result => {
-                let b64 = result.split(",")[1]
+            try {
+                let audio = await result
+                console.log(audio)
+                let b64 = audio.split(",")[1]
                 let body = { data: b64 }
-                return fetch('http://localhost:8000/',{
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify(body)
-            })
-            })
-            .then(response => response.json())
-            .then(data => {
+                let response = await fetch('http://localhost:8000/',{
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(body)
+                })
+                let data = await response.json()
+                console.log(audio)
                 console.log(data.result)
                 this.props.setFilterTextAction(data.result)
                 this.props.setLoadingFilterTextAction(false)
-            })
+            } catch (error) {
+                console.log(error)
+            }
+            // result.then(result => {
+            //     console.log('result',result)
+            //     let b64 = result.split(",")[1]
+            //     let body = { data: b64 }
+            //     return fetch('http://localhost:8000/',{
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' }, 
+            //     body: JSON.stringify(body)
+            // })
+            // })
+            // .then(response => response.json())
+            // .then(data => {
+            //     console.log(data.result)
+            //     this.props.setFilterTextAction(data.result)
+            //     this.props.setLoadingFilterTextAction(false)
+            // })
+            // .catch(err => console.log(err))
         })
     }
 

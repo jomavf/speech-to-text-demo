@@ -82,7 +82,7 @@ class Main extends Component {
                         this.props.resultList
                         .filter(video => {
                             let title = video.title.toLocaleLowerCase()
-                            let filterText = this.props.filterText.toLowerCase().trim()
+                            let filterText = typeof this.props.filterText === 'string' && this.props.filterText.toLowerCase().trim()
                             let flag = title.includes(filterText)
                             return flag
                         })
@@ -94,7 +94,7 @@ class Main extends Component {
                     }
                 </section>
                 <section className="principal__video">
-                    <video className="principal__video_video" src={this.props.principalVideo} controls autoPlay />
+                    <video className="principal__video_video" src={this.props.principalVideo} controls />
                     <h2 className="principal__video_text">{this.props.principalTitle}</h2>
                 </section>
             </div>
