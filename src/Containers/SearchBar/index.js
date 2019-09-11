@@ -92,7 +92,7 @@ class SearchBar extends Component {
                 console.log(audio)
                 let b64 = audio.split(",")[1]
                 let body = { data: b64 }
-                let response = await fetch('http://localhost:8000/',{
+                let response = await fetch('https://rest-speech-to-text.herokuapp.com/',{
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify(body)
