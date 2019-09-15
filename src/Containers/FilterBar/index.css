@@ -1,0 +1,68 @@
+.search-box {
+    display: flex;
+    height: 10vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-box__btn {
+    color: #e84118;
+    float: right;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px 0px 0px 25px;
+    background: red;
+    justify-content: center;
+    align-items: center;
+    padding-left: 3px;
+    outline: none;
+}
+.search-box__btn:hover {
+    cursor: pointer;
+}
+
+.search-box__txt {
+    background: white;
+    color:black;
+    border:none;
+    padding-left: 10px;
+    height: 50px;
+    width: 100%;
+    border-radius: 0px 25px 25px 0px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-box__btn-listening {
+    float: right;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px 0px 0px 25px;
+    background: rgb(144, 197, 64);
+    justify-content: center;
+    align-items: center;
+    padding-left: 3px;
+    outline: none;
+}
+
+.search-box__btn-listening img {
+    animation: microphone 1s ease-in-out 0s infinite;
+}
+
+@keyframes microphone{
+    from {
+        transform: scale(0.6)
+    }
+    to {
+        transform: scale(1)
+    }
+}
+
+.loading {    
+    background-color: white;
+    background-image: url("http://loadinggif.com/images/image-selection/3.gif");
+    background-size: 25px 25px;
+    background-position:center center;
+    background-repeat: no-repeat;
+    padding-right: 100px;
+}

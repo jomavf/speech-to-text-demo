@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
 
-class SearchBar extends Component {
+class FilterBar extends Component {
     constructor(){
         super()
         this.state = {
@@ -69,7 +69,7 @@ class SearchBar extends Component {
     }
 
     createDownloadLink = async() => {
-        this.props.setLoadingFilterTextAction(true)
+        this.props.setLoadingFilterTextVideoAction(true)
         let { recorder } = this.state
         await recorder.exportWAV(async blob => {
             console.log('blob',blob)
@@ -92,8 +92,11 @@ class SearchBar extends Component {
                 let data = await response.json()
                 console.log(audio)
                 console.log(data.result)
-                this.props.setFilterTextAction(data.result)
-                this.props.setLoadingFilterTextAction(false)
+                this.props.setFilterTextVideoAction(data.result)
+                this.props.setLoadingFilterTextVideoAction(false)
+                console.log('Executing execFunc')
+                this.props.execFunc()
+                
             } catch (error) {
                 console.log(error)
             }
@@ -101,7 +104,8 @@ class SearchBar extends Component {
     }
 
     onChangeHandler = (event) => {
-        this.props.setFilterTextAction(event.target.value)
+        event.preventDefault();
+        this.props.setFilterTextAction(event.target.value);
     }
 
     render(){
@@ -112,7 +116,7 @@ class SearchBar extends Component {
                 <button className={searchBoxBtnListening} onClick={this.toggleListen}>
                     <img src={microphone} height="50%" width="50%" alt="microphone-img"/>
                 </button>
-                <input className="search-box__txt" type="text" placeholder="Reproducir video de ..." value={this.props.searchBar.filterText} onChange={this.onChangeHandler}/>
+                <input className="search-box__txt" type="text" placeholder="Filtrar por segundos" value={this.props.filterBar.filterTextVideo} onChange={this.onChangeHandler}/>
             </div>
         )
     }
@@ -120,22 +124,19 @@ class SearchBar extends Component {
 
 function mapStateToProps(state) {
     return {
-        searchBar: state.searchBar
+        filterBar: state.filterBar
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        setFilterTextAction(filterText){
-            dispatch(actions.setFilterTextAction(filterText))
+        setFilterTextVideoAction(filterText){
+            dispatch(actions.setFilterTextVideoAction(filterText))
         },
-        setLoadingFilterTextAction(payload){
-            dispatch(actions.setLoadingFilterTextAction(payload))
-        },
-        updateVideoListAction(payload){
-            dispatch(actions.updateVideoListAction(payload))
+        setLoadingFilterTextVideoAction(payload){
+            dispatch(actions.setLoadingFilterTextVideoAction(payload))
         },
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBar)
+export default connect(mapStateToProps, mapDispatchToProps)(FilterBar)

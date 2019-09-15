@@ -5,14 +5,14 @@ import VideoHolder from '../../Components/VideoHolder'
 import actions from '../../redux/actions'
 import firebase from '../../firebase'
 import spinner from './spinner.svg'
-
-console.log("Archivo Main")
+import FilterText from '../FilterBar'
 
 class Main extends Component {
     constructor(props){
         super(props)
         this.state = {
-            datasetReference: null
+            datasetReference: null,
+            valueFilterInput: ""
         }
     }
 
@@ -48,11 +48,7 @@ class Main extends Component {
             return dataset.list({maxResults: 1})
         })
 
-        // console.log(prefixesRef)
-
         let result = await Promise.all(prefixesRef)
-
-        // console.log('result', result)
 
         let items = result.map(element => element.items);
 
@@ -70,6 +66,63 @@ class Main extends Component {
         console.log('result', resultVideos)
         this.props.setResultListAction(resultVideos)
         this.props.setLoadingFirebase(false)
+    }
+
+    applyLogic = () => {
+        /*
+        Logica simple para filtrar un video por segundos
+        El formato tiene que ser << %filter1inSeconds% to %filter2inSeconds% >>
+        */
+       
+        //Funcion para validar si los argumentos de filtrado son correctos
+        let principalVideo = document.getElementById('principalVideo') // Nativo por mejorar
+        let valid = (arg) => {
+           if(arg > 0 && arg < principalVideo.duration){
+               return true;
+           } else {
+               return false;
+           }
+        }
+
+        // Si existe algun valor en el filtro entonces proceder a recortar el video
+        // let { valueFilterInput } = this.state
+        let { filterTextVideo } = this.props
+        
+
+        if(filterTextVideo !== ''){
+            let words = filterTextVideo.split(" ")
+
+            let firstValue = valid(words[0]) ? words[0] : 0; 
+            let secondValue = valid(words[2]) ? words[2] : principalVideo.duration;
+            console.log(firstValue,'to',secondValue)
+
+            principalVideo.currentTime = firstValue
+            principalVideo.play()
+
+            let durationFilter = Math.abs(secondValue - firstValue) * 1000 // ms
+
+            console.log('durationFilter', durationFilter)
+
+            // Incrementamos la duracion en 1 segundo
+            // if((durationFilter + 1000) >= (principalVideo.duration * 1000)){
+            //     console.log('Entrando aqui')
+            //     durationFilter = principalVideo.duration
+            // } else {
+            //     console.log('Entrando aca')
+            //     durationFilter+=1000
+            // }
+            
+            if(!(secondValue > principalVideo.duration || firstValue >= secondValue || firstValue < 0)){
+                setTimeout(() => {
+                    principalVideo.pause()
+                }, durationFilter);
+            }else{
+                console.log("Valores de filtro incorrectos");
+                return;
+            }
+        } else {
+            console.log("No existe valores para filtro!")
+        }
     }
 
     render(){
@@ -94,8 +147,10 @@ class Main extends Component {
                     }
                 </section>
                 <section className="principal__video">
-                    <video className="principal__video_video" src={this.props.principalVideo} controls />
+                    <video id="principalVideo" className="principal__video_video" src={this.props.principalVideo} controls />
                     <h2 className="principal__video_text">{this.props.principalTitle}</h2>
+                    {this.props.principalVideo !== '' && <FilterText execFunc={this.applyLogic}></FilterText>}
+                    <h1>{this.state.valueFilterInput}</h1>
                 </section>
             </div>
         )
@@ -105,12 +160,14 @@ class Main extends Component {
 function mapStateToProps(state) {
     let { principalVideo, principalTitle, resultList, loadingFirebase } = state.principalPage
     let { filterText } = state.searchBar
+    let { filterTextVideo } = state.filterBar
     return {
         loadingFirebase,
         resultList,
         principalVideo,
         principalTitle,
         filterText,
+        filterTextVideo
     }
 }
 
