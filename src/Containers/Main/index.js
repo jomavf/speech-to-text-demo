@@ -103,14 +103,6 @@ class Main extends Component {
 
             console.log('durationFilter', durationFilter)
 
-            // Incrementamos la duracion en 1 segundo
-            // if((durationFilter + 1000) >= (principalVideo.duration * 1000)){
-            //     console.log('Entrando aqui')
-            //     durationFilter = principalVideo.duration
-            // } else {
-            //     console.log('Entrando aca')
-            //     durationFilter+=1000
-            // }
             
             if(!(secondValue > principalVideo.duration || firstValue >= secondValue || firstValue < 0)){
                 setTimeout(() => {
@@ -150,7 +142,6 @@ class Main extends Component {
                     <video id="principalVideo" className="principal__video_video" src={this.props.principalVideo} controls />
                     <h2 className="principal__video_text">{this.props.principalTitle}</h2>
                     {this.props.principalVideo !== '' && <FilterText execFunc={this.applyLogic}></FilterText>}
-                    <h1>{this.state.valueFilterInput}</h1>
                 </section>
             </div>
         )

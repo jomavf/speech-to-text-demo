@@ -1,9 +1,14 @@
 import './index.css'
 import microphone from './microphone.png'
+import rolling from './img/rolling.svg'
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
+
+import resultSuccessAudio from './audio/resultado-encontrado.mp3'
+import errorAudio from './audio/error.mp3'
+import waitPleaseAudio from './audio/espere-porfavor.mp3'
 
 class SearchBar extends Component {
     constructor(){
@@ -51,6 +56,7 @@ class SearchBar extends Component {
     }
 
     handleListen = async () => {
+        let waitPlease = document.getElementById('waitPlease')
         if(this.state.audio_context.state === 'suspended') {
             await this.state.audio_context.resume()
             console.log('Ahora esta',this.state.audio_context.state)
@@ -62,6 +68,7 @@ class SearchBar extends Component {
             recorder.record()
         } else {
             console.log('Al else')
+            waitPlease.play()
             recorder.stop()
             this.createDownloadLink()
             recorder.clear();
@@ -69,6 +76,10 @@ class SearchBar extends Component {
     }
 
     createDownloadLink = async() => {
+        let sucessAud = document.getElementById('resultSuccess')
+        let errorAud = document.getElementById('errorFail')
+        let waitPlease = document.getElementById('waitPlease')
+
         this.props.setLoadingFilterTextAction(true)
         let { recorder } = this.state
         await recorder.exportWAV(async blob => {
@@ -94,7 +105,14 @@ class SearchBar extends Component {
                 console.log(data.result)
                 this.props.setFilterTextAction(data.result)
                 this.props.setLoadingFilterTextAction(false)
+                waitPlease.pause()
+                if(data.result === ''){
+                    errorAud.play();    
+                } else {
+                    sucessAud.play();
+                }
             } catch (error) {
+                errorAud.play()
                 console.log(error)
             }
         })
@@ -110,9 +128,15 @@ class SearchBar extends Component {
         return (
             <div className="search-box">
                 <button className={searchBoxBtnListening} onClick={this.toggleListen}>
-                    <img src={microphone} height="50%" width="50%" alt="microphone-img"/>
+                    {!this.props.searchBar.loading ? <img src={microphone} height="50%" width="50%" alt="microphone-img"/> :
+                    <img src={rolling} height="50%" width="50%" alt="rolling"/>}
                 </button>
                 <input className="search-box__txt" type="text" placeholder="Reproducir video de ..." value={this.props.searchBar.filterText} onChange={this.onChangeHandler}/>
+
+                {/* hidden */}
+                <audio id="waitPlease" style={{ diaplay: 'none'}} src={waitPleaseAudio}></audio>
+                <audio id="resultSuccess" style={{ diaplay: 'none'}} src={resultSuccessAudio}></audio>
+                <audio id="errorFail" style={{ diaplay: 'none'}} src={errorAudio}></audio>
             </div>
         )
     }

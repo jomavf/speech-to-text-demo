@@ -1,9 +1,14 @@
 import './index.css'
 import microphone from './microphone.png'
+import rolling from './img/rolling.svg'
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
+
+import resultSuccessAudio from './audio/resultado-encontrado.mp3'
+import errorAudio from './audio/error.mp3'
+import waitPleaseAudio from './audio/espere-porfavor.mp3'
 
 class FilterBar extends Component {
     constructor(){
@@ -51,6 +56,7 @@ class FilterBar extends Component {
     }
 
     handleListen = async () => {
+        let waitPlease = document.getElementById('waitPlease')
         if(this.state.audio_context.state === 'suspended') {
             await this.state.audio_context.resume()
             console.log('Ahora esta',this.state.audio_context.state)
@@ -58,9 +64,9 @@ class FilterBar extends Component {
         }
         let { recorder } = this.state
         if(this.state.listening){
-            console.log('Entre al if')
             recorder.record()
         } else {
+            waitPlease.play();
             console.log('Al else')
             recorder.stop()
             this.createDownloadLink()
@@ -69,6 +75,10 @@ class FilterBar extends Component {
     }
 
     createDownloadLink = async() => {
+        let waitPlease = document.getElementById('waitPlease')
+        let sucessAud = document.getElementById('resultSuccess')
+        let errorAud = document.getElementById('errorFail')
+
         this.props.setLoadingFilterTextVideoAction(true)
         let { recorder } = this.state
         await recorder.exportWAV(async blob => {
@@ -94,11 +104,18 @@ class FilterBar extends Component {
                 console.log(data.result)
                 this.props.setFilterTextVideoAction(data.result)
                 this.props.setLoadingFilterTextVideoAction(false)
-                console.log('Executing execFunc')
-                this.props.execFunc()
+                waitPlease.pause()
+                if(data.result === ''){
+                    errorAud.play();    
+                } else {
+                    sucessAud.play();
+                }
+                this.props.execFunc();
                 
             } catch (error) {
-                console.log(error)
+                waitPlease.pause()
+                errorAud.play();
+                console.log(error);
             }
         })
     }
@@ -114,9 +131,13 @@ class FilterBar extends Component {
         return (
             <div className="search-box">
                 <button className={searchBoxBtnListening} onClick={this.toggleListen}>
-                    <img src={microphone} height="50%" width="50%" alt="microphone-img"/>
+                    { !this.props.filterBar.loading ? <img src={microphone} height="50%" width="50%" alt="microphone-img"/> :
+                    <img src={rolling} height="50%" width="50%" alt="microphone-img"/>}
                 </button>
                 <input className="search-box__txt" type="text" placeholder="Filtrar por segundos" value={this.props.filterBar.filterTextVideo} onChange={this.onChangeHandler}/>
+                <audio id="waitPlease" style={{ diaplay: 'none'}} src={waitPleaseAudio}></audio>
+                <audio id="resultSuccess" style={{ diaplay: 'none'}} src={resultSuccessAudio}></audio>
+                <audio id="errorFail" style={{ diaplay: 'none'}} src={errorAudio}></audio>
             </div>
         )
     }
