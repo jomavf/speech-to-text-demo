@@ -102,9 +102,8 @@ class Main extends Component {
             let durationFilter = Math.abs(secondValue - firstValue) * 1000 // ms
 
             console.log('durationFilter', durationFilter)
-
             
-            if(!(secondValue > principalVideo.duration || firstValue >= secondValue || firstValue < 0)){
+            if(!(secondValue > principalVideo.duration || Number(firstValue) >= Number(secondValue) || firstValue < 0)){
                 setTimeout(() => {
                     principalVideo.pause()
                 }, durationFilter);
