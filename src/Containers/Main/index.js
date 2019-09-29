@@ -122,7 +122,7 @@ class Main extends Component {
                 <p className="principal__label">Resultados</p>
                 <section className="principal__list">
                     {
-                        this.props.loadingFirebase ? <img className='spinner' src={spinner}/>  :
+                        this.props.loadingFirebase ? <img className='spinner' src={spinner} alt="spinner"/>  :
                         this.props.resultList
                         .filter(video => {
                             let title = video.title.toLocaleLowerCase()

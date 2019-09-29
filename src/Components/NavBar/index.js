@@ -17,16 +17,16 @@ const NavBar = () => {
 
     return (
         <nav>
-            <div class="logo">
+            <div className="logo">
                 <img src={logo} alt="logito_upc" height="48px"/>
                 <span>UPC</span>
             </div>
-            <div class="hamburger" onClick={handleClick}>
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
+            <div className="hamburger" onClick={handleClick}>
+                <div className="line"></div>
+                <div className="line"></div>
+                <div className="line"></div>
             </div>
-            <ul class="nav-links" ref={navLinks}>
+            <ul className="nav-links" ref={navLinks}>
                 <li><NavLink to="/home">Inicio</NavLink></li>
                 <li><NavLink to="/search">Buscar</NavLink></li>
                 <li><NavLink to="/record">Grabar</NavLink></li>
