@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import './index.css'
 import microphoneSvg from '../../images/microphone.svg'
@@ -11,9 +11,9 @@ const SearchBox = (props) => {
     const [recorder, setRecorder] = useState(null);
     const [audioContext, setAudioContext] = useState(null);
     // Estilos
-    const searchBtnRef = React.createRef();
-    const searchRef = React.createRef();
-    const tipRef = React.createRef();
+    const searchBtnRef = useRef(null);
+    const searchRef = useRef(null);
+    const tipRef = useRef(null);
 
     let i = 0;
     let speed =  100;
@@ -46,10 +46,13 @@ const SearchBox = (props) => {
     }
 
     async function clickHandler () {
+        debugger
+        console.log('Ejecutando el click')
         addStyle();
+        console.log('Listening 1',listening)
         setListening(!listening);
+        console.log('Listening 2',listening)
         await handleListen();
-
     };
 
     async function handleListen() {
@@ -128,7 +131,8 @@ const SearchBox = (props) => {
     useEffect(()=>{
         (async function(){
             await init();
-            audioContext && (audioContext.state === 'suspended') && audioContext.resume() && console.log('resuming')
+            console.log('Listening',listening)
+            // audioContext && (audioContext.state === 'suspended') && audioContext.resume() && console.log('resuming')
         })();
     },[])
 
@@ -141,7 +145,7 @@ const SearchBox = (props) => {
                 </div>
                 <input ref={searchRef} className="search__input" type="text" placeholder=""/>
             </div>
-            <p className="search__tip" ref={tipRef}>{props.tip || "Presiona una vez el boton para hablar y luego vuelve a presionarlo para buscar"}</p>
+            <p className="search__tip" ref={tipRef}>{props.tip || "Presione el botón para hablar y vuelva a presionarlo para buscar"}</p>
         </div>
     )
 };

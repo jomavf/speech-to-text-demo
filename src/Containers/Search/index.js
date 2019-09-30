@@ -1,15 +1,13 @@
 import React from 'react';
 
 import Main from '../Main';
-// import SearchBar from '../SearchBar';
-import SearchBox from '../SearchBox';
+import SearchBar from '../SearchBar';
 // import filterSvg from '../../images/filter.svg';
 
 const Search = () => {
     return (
         <div>
-            <SearchBox></SearchBox>
-            {/* <SearchBar></SearchBar> */}
+            <SearchBar></SearchBar>
             <Main></Main>
         </div>
     )

@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
+
 import './index.css'
+import './main.css'
+
 import { connect } from 'react-redux'
-import VideoHolder from '../../Components/VideoHolder'
 import actions from '../../redux/actions'
 import firebase from '../../firebase'
 import spinner from './spinner.svg'
-import FilterText from '../FilterBar'
+
+import rolling from '../../images/rolling.svg'
 
 class Main extends Component {
     constructor(props){
@@ -118,30 +121,69 @@ class Main extends Component {
 
     render(){
         return (
-            <div className="page">
-                <p className="principal__label">Resultados</p>
-                <section className="principal__list">
-                    {
-                        this.props.loadingFirebase ? <img className='spinner' src={spinner} alt="spinner"/>  :
-                        this.props.resultList
-                        .filter(video => {
-                            let title = video.title.toLocaleLowerCase()
-                            let filterText = typeof this.props.filterText === 'string' && this.props.filterText.toLowerCase().trim()
-                            let flag = title.includes(filterText)
-                            return flag
-                        })
-                        .map((video, index) => {
-                            return (
-                                <VideoHolder key={index} url={video.url} title={video.title} onClickHandler={() => this.onClickList(video)}/>
-                            )
-                        })
-                    }
+            // <div className="page">
+            //     <p className="principal__label">Resultados</p>
+            //     <section className="principal__list">
+            //         {
+            //             this.props.loadingFirebase ? <img className='spinner' src={spinner} alt="spinner"/>  :
+            //             this.props.resultList
+            //             .filter(video => {
+            //                 let title = video.title.toLocaleLowerCase()
+            //                 let filterText = typeof this.props.filterText === 'string' && this.props.filterText.toLowerCase().trim()
+            //                 let flag = title.includes(filterText)
+            //                 return flag
+            //             })
+            //             .map((video, index) => {
+            //                 return (
+            //                     <VideoHolder key={index} url={video.url} title={video.title} onClickHandler={() => this.onClickList(video)}/>
+            //                 )
+            //             })
+            //         }
+            //     </section>
+            //     <section className="principal__video">
+            //         <video id="principalVideo" className="principal__video_video" src={this.props.principalVideo} controls />
+            //         <h2 className="principal__video_text">{this.props.principalTitle}</h2>
+            //         {this.props.principalVideo !== '' && <FilterText execFunc={this.applyLogic}></FilterText>}
+            //     </section>
+            // </div>
+            <div className="principal__search">
+                <section className="video-player">
+                    <div className="video-player-container">
+                        <video src={this.props.principalVideo} controls autoPlay width="100%"></video>
+                    </div>
+                    <h2>{this.props.principalTitle}</h2>
                 </section>
-                <section className="principal__video">
-                    <video id="principalVideo" className="principal__video_video" src={this.props.principalVideo} controls />
-                    <h2 className="principal__video_text">{this.props.principalTitle}</h2>
-                    {this.props.principalVideo !== '' && <FilterText execFunc={this.applyLogic}></FilterText>}
+
+                <section className="playlist">
+                    <div className="playlist__info">
+                    <span>Lista de videos obtenidos: </span>
+                    </div>
+                    <div className="playlist__details">
+                        {
+                            this.props.loadingFirebase ? (<img className='spinner' src={rolling} alt="spinner"/>)  :
+                            this.props.resultList
+                                .filter(video => {
+                                    let title = video.title.toLocaleLowerCase()
+                                    let filterText = typeof this.props.filterText === 'string' && this.props.filterText.toLowerCase().trim()
+                                    let flag = title.includes(filterText)
+                                    return flag
+                                })
+                                .map((video, index) => {
+                                    return (
+                                        <div className="playlist__details__video" key={index} onClick={() => this.onClickList(video)}>
+                                            <div className="playlist__details__video-content">
+                                                <video src={video.url} />
+                                                <h3>{video.title}</h3>
+                                            </div>
+                                            <div className="playlist__details__video-break-line"></div>
+                                        </div>
+                                    )
+                                })
+                        }
+                        
+                    </div>
                 </section>
+
             </div>
         )
     }
