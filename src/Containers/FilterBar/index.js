@@ -1,6 +1,7 @@
 import './index.css'
-import microphone from './microphone.png'
-import rolling from './img/rolling.svg'
+import filterIcon from '../../images/filter.svg'
+import rolling from '../../images/rolling.svg'
+// import rolling from './img/rolling.svg'
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -122,7 +123,7 @@ class FilterBar extends Component {
 
     onChangeHandler = (event) => {
         event.preventDefault();
-        this.props.setFilterTextAction(event.target.value);
+        this.props.setFilterTextVideoAction(event.target.value);
     }
 
     render(){
@@ -131,7 +132,7 @@ class FilterBar extends Component {
         return (
             <div className="search-box">
                 <button className={searchBoxBtnListening} onClick={this.toggleListen}>
-                    { !this.props.filterBar.loading ? <img src={microphone} height="50%" width="50%" alt="microphone-img"/> :
+                    { !this.props.filterBar.loading ? <img src={filterIcon} height="50%" width="50%" alt="microphone-img"/> :
                     <img src={rolling} height="50%" width="50%" alt="microphone-img"/>}
                 </button>
                 <input className="search-box__txt" type="text" placeholder="Filtrar por segundos" value={this.props.filterBar.filterTextVideo} onChange={this.onChangeHandler}/>

@@ -18,6 +18,15 @@
     /* background: blue; */
 }
 
+/* @media screen and (min-width: 1300px){
+    .video-player {
+        flex: 3;
+    }
+    .playlist {
+        flex: 1;
+    }
+} */
+
 .playlist__info {
     font-size: 20px;
     padding: 1rem 0px;
@@ -49,6 +58,15 @@
     width:97%;
     margin: 1rem 0;
     height: 1px;
+}
+.video-player-container video {
+    background: black;
+}
+
+@media screen and (min-width: 800px){
+    .video-player-container video {
+      max-height: 547.11px;
+    }
 }
 
 .playlist__details__video video {

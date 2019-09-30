@@ -8,6 +8,7 @@ import actions from '../../redux/actions'
 import firebase from '../../firebase'
 import spinner from './spinner.svg'
 
+import FilterText from '../FilterBar/index'
 import rolling from '../../images/rolling.svg'
 
 class Main extends Component {
@@ -149,9 +150,10 @@ class Main extends Component {
             <div className="principal__search">
                 <section className="video-player">
                     <div className="video-player-container">
-                        <video src={this.props.principalVideo} controls autoPlay width="100%"></video>
+                        <video id="principalVideo" src={this.props.principalVideo} controls autoPlay width="100%"></video>
                     </div>
                     <h2>{this.props.principalTitle}</h2>
+                    {this.props.principalVideo !== '' && <FilterText execFunc={this.applyLogic}/>}
                 </section>
 
                 <section className="playlist">

@@ -50,7 +50,7 @@
 .search__tip {
     color: #E64545;
     font-size: .6em;
-    text-align: left;
+    text-align: center;
     text-transform: uppercase;
     visibility: hidden;
     opacity: 0;

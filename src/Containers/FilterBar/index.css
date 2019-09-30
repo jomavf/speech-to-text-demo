@@ -1,17 +1,18 @@
 .search-box {
     display: flex;
-    height: 10vh;
-    justify-content: center;
+    /* height: 5vh; */
+    width: 80%;
+    justify-content: start;
     align-items: center;
 }
 
 .search-box__btn {
-    color: #e84118;
+    /* color: #e84118; */
     float: right;
     width: 50px;
-    height: 50px;
+    height: 40px;
     border-radius: 25px 0px 0px 25px;
-    background: red;
+    background: white;
     justify-content: center;
     align-items: center;
     padding-left: 3px;
@@ -26,7 +27,7 @@
     color:black;
     border:none;
     padding-left: 10px;
-    height: 50px;
+    height: 40px;
     width: 100%;
     border-radius: 0px 25px 25px 0px;
     font-size: 14px;
@@ -36,9 +37,9 @@
 .search-box__btn-listening {
     float: right;
     width: 50px;
-    height: 50px;
+    height: 40px;
     border-radius: 25px 0px 0px 25px;
-    background: rgb(144, 197, 64);
+    background: rgba(199, 31, 31, 0.329);
     justify-content: center;
     align-items: center;
     padding-left: 3px;
