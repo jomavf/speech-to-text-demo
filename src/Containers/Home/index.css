@@ -1,12 +1,17 @@
 .home__main {
+    position: absolute;
+    top: 8vh;
+    left: 50%;
+    padding: 2rem 0;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
-    width: 80%;
-    height: 90vh;
-    margin: 0 auto;
+    width: 85%;
+    min-height: 90vh;
     justify-content: center;
-    /* align-items: center; */
-    font-family: 'Montserrat', sans-serif;
+}
+.home__main p {
+    line-height: 2rem;
 }
 .home__main h1 {
     text-align: center;
@@ -28,8 +33,19 @@
 
 .home__card {
     width: 40%;
-    margin: 2rem;
+    margin: 1.5rem;
 }
 .home__card h3 {
     margin: 0.5rem 0;
+    font-size: 1.3rem;
+}
+
+@media screen and (max-width: 900px){
+    .home__content_card {
+        display: flex;
+        flex-direction: column;
+    }
+    .home__card {
+        width: 90%;
+    }
 }
