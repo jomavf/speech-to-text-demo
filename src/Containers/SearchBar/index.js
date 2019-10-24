@@ -78,7 +78,7 @@ class SearchBar extends Component {
             alert('No hay soporte de audio web en este navegador!!')
         }
         let stream = await navigator.mediaDevices.getUserMedia({audio: true})
-        console.log('ESTADO audio-context',this.state.audioContext.state)
+        // console.log('ESTADO audio-context',this.state.audioContext.state)
         let input = this.state.audioContext.createMediaStreamSource(stream)
         let recorder = new window.Recorder(input)
         this.setState({ recorder })
@@ -105,15 +105,13 @@ class SearchBar extends Component {
         let waitPlease = document.getElementById('waitPlease')
         if(this.state.audioContext.state === 'suspended') {
             await this.state.audioContext.resume()
-            console.log('Ahora esta',this.state.audioContext.state)
+            // console.log('Ahora esta',this.state.audioContext.state)
             // this.setState({ audioContext })
         }
         let { recorder } = this.state
         if(this.state.listening){
-            console.log('Entre al if')
             recorder.record()
         } else {
-            console.log('Al else')
             waitPlease.play()
             recorder.stop()
             this.createDownloadLink()
@@ -138,7 +136,7 @@ class SearchBar extends Component {
             })
             try {
                 let audio = await result
-                console.log(audio)
+                // console.log(audio)
                 let b64 = audio.split(",")[1]
                 let body = { data: b64 }
                 let response = await fetch('https://rest-speech-to-text.herokuapp.com/',{
@@ -147,8 +145,8 @@ class SearchBar extends Component {
                     body: JSON.stringify(body)
                 })
                 let data = await response.json()
-                console.log(audio)
-                console.log(data.result)
+                // console.log(audio)
+                // console.log(data.result)
                 this.props.setFilterTextAction(data.result)
                 this.props.setLoadingFilterTextAction(false)
                 waitPlease.pause()
@@ -172,17 +170,6 @@ class SearchBar extends Component {
         let { listening } = this.state
         let searchBoxBtnListening = listening ? 'search-box__btn-listening' : 'search-box__btn'
         return (
-            // <div className="search-box">
-            //     <button className={searchBoxBtnListening} onClick={this.toggleListen}>
-            //         {!this.props.searchBar.loading ? <img src={microphone} height="50%" width="50%" alt="microphone-img"/> :
-            //         <img src={rolling} height="50%" width="50%" alt="rolling"/>}
-            //     </button>
-            //     <input className="search-box__txt" type="text" placeholder="Reproducir video de ..." value={this.props.searchBar.filterText} onChange={this.onChangeHandler}/>
-
-            //     <audio id="waitPlease" style={{ diaplay: 'none'}} src={waitPleaseAudio}></audio>
-            //     <audio id="resultSuccess" style={{ diaplay: 'none'}} src={resultSuccessAudio}></audio>
-            //     <audio id="errorFail" style={{ diaplay: 'none'}} src={errorAudio}></audio>
-            // </div>
             <div className="search">
                 <div className="search__contain">
                     <div className='search__icon' onClick={this.toggleListen}>
@@ -193,9 +180,9 @@ class SearchBar extends Component {
                 </div>
                 <p className="search__tip" ref={this.tipRef}>{this.props.tip || "Presione el botón para hablar y vuelva a presionarlo para buscar"}</p>
                 
-                <audio id="waitPlease" style={{ diaplay: 'none'}} src={waitPleaseAudio}></audio>
-                <audio id="resultSuccess" style={{ diaplay: 'none'}} src={resultSuccessAudio}></audio>
-                <audio id="errorFail" style={{ diaplay: 'none'}} src={errorAudio}></audio>
+                <audio id="waitPlease" style={{ display: 'none'}} src={waitPleaseAudio}></audio>
+                <audio id="resultSuccess" style={{ display: 'none'}} src={resultSuccessAudio}></audio>
+                <audio id="errorFail" style={{ display: 'none'}} src={errorAudio}></audio>
             </div>
         )
     }
