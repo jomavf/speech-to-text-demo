@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import './main.css'
 
+import axios from 'axios'
+
 import { connect } from 'react-redux'
 import actions from '../../redux/actions'
 import firebase from '../../firebase'
@@ -47,7 +49,7 @@ class Main extends Component {
 
         let prefixesRef = prefixes.map(prefix => {
             let dataset = datasetReference.child(prefix)
-            return dataset.list({maxResults: 1})
+            return dataset.list()
         })
 
         let result = await Promise.all(prefixesRef)
@@ -118,6 +120,37 @@ class Main extends Component {
         }
     }
 
+    show = () => {
+        let resultList = this.props.resultList
+                        .filter(video => {
+                            let title = video.title.toLocaleLowerCase()
+                            let filterText = typeof this.props.filterText === 'string' && this.props.filterText.toLowerCase().trim()
+                            let flag = title.includes(filterText)
+                            return flag
+                        })
+        let listaFiltrada = resultList                        
+        let toShow = listaFiltrada.map((video, index) => {
+
+                            return (
+                                <div className="playlist__details__video" key={index}>
+                                    <div className="playlist__details__video-content" onClick={() => this.onClickList(video)}>
+                                            <video src={video.url} />
+                                            <h3 className="playlist__details__video-titulo">{video.title}</h3>
+                                    </div>
+                                    {/* <a href={video.url} download onClick={(e) => this.linkOnClick(e,video.url)}><i className="fa fa-download" aria-hidden="true"></i></a> */}
+                                    <div className="playlist__details__video-break-line"></div>
+                                </div>
+                            )
+                        })
+        if(this.props.filterText !== "" && toShow.length !== 0){
+            this.props.setPrincipalVideoAction(listaFiltrada[0].url)
+            this.props.setPrincipalTitleAction(listaFiltrada[0].title)
+            // console.log("Umm", this.props.filterText, listaFiltrada)
+
+        }
+        return this.props.loadingFirebase ? (<img className='spinner' src={rolling} alt="spinner"/>)  : toShow
+    }
+
     render(){
         return (
             <div className="principal__search">
@@ -134,28 +167,7 @@ class Main extends Component {
                     <span>Lista de videos obtenidos: </span>
                     </div>
                     <div className="playlist__details">
-                        {
-                            this.props.loadingFirebase ? (<img className='spinner' src={rolling} alt="spinner"/>)  :
-                            this.props.resultList
-                                .filter(video => {
-                                    let title = video.title.toLocaleLowerCase()
-                                    let filterText = typeof this.props.filterText === 'string' && this.props.filterText.toLowerCase().trim()
-                                    let flag = title.includes(filterText)
-                                    return flag
-                                })
-                                .map((video, index) => {
-                                    return (
-                                        <div className="playlist__details__video" key={index} onClick={() => this.onClickList(video)}>
-                                            <div className="playlist__details__video-content">
-                                                <video src={video.url} />
-                                                <h3>{video.title}</h3>
-                                            </div>
-                                            <div className="playlist__details__video-break-line"></div>
-                                        </div>
-                                    )
-                                })
-                        }
-                        
+                        { this.show() }
                     </div>
                 </section>
 

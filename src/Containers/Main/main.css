@@ -51,13 +51,20 @@
     display: flex;
     align-items: center;
     overflow-x: hidden;
+    position: relative;
 }
 .playlist__details__video-content h3 {
     margin-left: 5px;
     font-size: 16px;
-    max-width: 280px;
+    /* max-width: 280px; */
+    max-width: 100%;
     font-weight: 300;
     word-wrap: break-word;
+}
+.playlist__details__video-content h3:hover {
+    text-decoration: underline;
+    color: #FF4D4D;
+    cursor: pointer;
 }
 .playlist__details__video-break-line {
     background: rgba(128, 128, 128, 0.418);
@@ -74,6 +81,21 @@
       max-height: 547.11px;
     }
 }
+
+.playlist__details__video {
+    position: relative;
+}
+.playlist__details__video a{
+    position: absolute;
+    bottom: 10%;
+    right: 10%;
+    color: black;
+    text-decoration: none;
+}
+.playlist__details__video a:hover{
+    color: #FF4D4D;
+}
+
 
 .playlist__details__video video {
     width: 168px;

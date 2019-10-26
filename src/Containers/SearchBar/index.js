@@ -78,7 +78,6 @@ class SearchBar extends Component {
             alert('No hay soporte de audio web en este navegador!!')
         }
         let stream = await navigator.mediaDevices.getUserMedia({audio: true})
-        // console.log('ESTADO audio-context',this.state.audioContext.state)
         let input = this.state.audioContext.createMediaStreamSource(stream)
         let recorder = new window.Recorder(input)
         this.setState({ recorder })
