@@ -53,6 +53,12 @@
     overflow-x: hidden;
     position: relative;
 }
+.playlist__details__video-content-description p{
+    font-size: 0.7rem;
+    padding-left: 0.3rem;
+    color: grey;
+    opacity: 0.8;
+}
 .playlist__details__video-content h3 {
     margin-left: 5px;
     font-size: 16px;

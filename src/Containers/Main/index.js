@@ -62,11 +62,11 @@ class Main extends Component {
                 itemsResult.push(i)
             })
         })
-
+        let parents = itemsResult.map(item => item.parent)
         let names = itemsResult.map(item => item.name)
         let urlsPromise = itemsResult.map(e => e.getDownloadURL())
         let urls = await Promise.all(urlsPromise)
-        let resultVideos = urls.map( (url,index) => ({title: names[index], url}))
+        let resultVideos = urls.map( (url,index) => ({title: names[index], url, category: parents[index].name}))
         console.log('result', resultVideos)
         this.props.setResultListAction(resultVideos)
         this.props.setLoadingFirebase(false)
@@ -135,7 +135,10 @@ class Main extends Component {
                                 <div className="playlist__details__video" key={index}>
                                     <div className="playlist__details__video-content" onClick={() => this.onClickList(video)}>
                                             <video src={video.url} />
-                                            <h3 className="playlist__details__video-titulo">{video.title}</h3>
+                                            <div className="playlist__details__video-content-description">
+                                                <h3 className="playlist__details__video-titulo">{video.title}</h3>
+                                                <p>{video.category}</p>
+                                            </div>
                                     </div>
                                     {/* <a href={video.url} download onClick={(e) => this.linkOnClick(e,video.url)}><i className="fa fa-download" aria-hidden="true"></i></a> */}
                                     <div className="playlist__details__video-break-line"></div>
