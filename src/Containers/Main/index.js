@@ -11,6 +11,8 @@ import firebase from '../../firebase'
 import FilterText from '../FilterBar/index'
 import rolling from '../../images/rolling.svg'
 
+import notFound from '../SearchBar/audio/no-resultados.mp3'
+
 class Main extends Component {
     constructor(props){
         super(props)
@@ -121,6 +123,8 @@ class Main extends Component {
     }
 
     show = () => {
+        let notFound = document.getElementById('notFound')
+
         let resultList = this.props.resultList
                         .filter(video => {
                             let title = video.title.toLocaleLowerCase()
@@ -142,6 +146,7 @@ class Main extends Component {
                                     </div>
                                     {/* <a href={video.url} download onClick={(e) => this.linkOnClick(e,video.url)}><i className="fa fa-download" aria-hidden="true"></i></a> */}
                                     <div className="playlist__details__video-break-line"></div>
+                                    
                                 </div>
                             )
                         })
@@ -150,6 +155,10 @@ class Main extends Component {
             this.props.setPrincipalTitleAction(listaFiltrada[0].title)
             // console.log("Umm", this.props.filterText, listaFiltrada)
 
+        } else if(toShow.length === 0 && this.props.filterText !== "") {
+                console.log(toShow.length)
+                console.log(this.props.filterText)
+                notFound && notFound.play()
         }
         return this.props.loadingFirebase ? (<img className='spinner' src={rolling} alt="spinner"/>)  : toShow
     }
@@ -157,6 +166,7 @@ class Main extends Component {
     render(){
         return (
             <div className="principal__search">
+                <audio id="notFound" style={{ display: 'none'}} src={notFound}></audio>
                 <section className="video-player">
                     <div className="video-player-container">
                         <video id="principalVideo" src={this.props.principalVideo} controls autoPlay width="100%"></video>

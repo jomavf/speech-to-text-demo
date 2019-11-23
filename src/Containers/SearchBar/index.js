@@ -151,8 +151,8 @@ class SearchBar extends Component {
                 waitPlease.pause()
                 if(data.result === ''){
                     errorAud.play();    
-                } else {
-                    sucessAud.play();
+                } else{
+                    // sucessAud.play();
                 }
             } catch (error) {
                 errorAud.play()
@@ -182,6 +182,7 @@ class SearchBar extends Component {
                 <audio id="waitPlease" style={{ display: 'none'}} src={waitPleaseAudio}></audio>
                 <audio id="resultSuccess" style={{ display: 'none'}} src={resultSuccessAudio}></audio>
                 <audio id="errorFail" style={{ display: 'none'}} src={errorAudio}></audio>
+                
             </div>
         )
     }

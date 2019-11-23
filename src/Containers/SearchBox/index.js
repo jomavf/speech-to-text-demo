@@ -49,9 +49,7 @@ const SearchBox = (props) => {
         debugger
         console.log('Ejecutando el click')
         addStyle();
-        console.log('Listening 1',listening)
         setListening(!listening);
-        console.log('Listening 2',listening)
         await handleListen();
     };
 
@@ -96,12 +94,6 @@ const SearchBox = (props) => {
                 let data = await response.json();
                 console.log('data',data)
                 setLoading(false);
-                // waitPlease.pause()
-                // if(data.result === ''){
-                //     errorAud.play();    
-                // } else {
-                //     sucessAud.play();
-                // }
             } catch (error) {
                 // errorAud.play()
                 console.log(error)
